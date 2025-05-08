@@ -1,0 +1,31 @@
+body{
+    background-color: #003366;
+    color: #FFFFFF;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center;
+}
+
+form{
+    text-align: left;
+    display: block;
+    width: 75%;
+    margin: auto;
+    background-color: #EEEEEE;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #000000;
+    border-radius: 16px;
+    box-shadow: 16px 16px 16px rgba(0,0,0,0.4);
+    padding: 16px;
+    box-sizing: border-box;
+    color: #000000;
+}
+
+label, select, input{
+    display: block;
+    margin: 6px;
+}
+
+label+input[type="radio"], input[type="radio"]{
+    display: inline;
+}
