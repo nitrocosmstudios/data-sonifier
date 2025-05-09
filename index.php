@@ -65,24 +65,13 @@ if(!empty($_FILES['csv']['tmp_name'])){
 
     if(!empty($data)){
 
-        // // Perform normalization
-        // $max = max($data);
-        // $mean = array_sum($data) / count($data);
-        // foreach($data as $point){
-        //     $sample = intval(round(($point / 100) * 32767)); // Sets a value from 0 to 32767.
-        //     $sample = intval(($point / $max) * 32767);
-        //     $sample = max(-32768, min(32767, $sample));
-        //     $audio->addSamples(pack($audio->bf,$sample));
-        // }
-
         // Perform normalization
         $filtered = array_filter($data, 'is_numeric');
         $smoothed = smoothData($filtered, 2); // 3 = 7-sample window
         $mean = array_sum($smoothed) / count($smoothed);
         $centered = array_map(fn($x) => $x - $mean, $smoothed);
         $max = max(array_map('abs', $centered));
-        if ($max == 0) $max = 1;
-
+        if($max == 0) $max = 1;
         foreach($centered as $point){
             $sample = intval(($point / $max) * 32767);
             $sample = max(-32768, min(32767, $sample));
@@ -132,6 +121,7 @@ $filters = explode(',','none,highpass,lowpass');
 <head>
     <title>Convert CSV to Audio</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="js.js"></script>
 </head>
 <body>
 
@@ -160,17 +150,21 @@ $filters = explode(',','none,highpass,lowpass');
         </select>
 
         <label for="filter_type">Filter Type</label>
-        <select name="filter_type" id="filter_type">
+        <select name="filter_type" id="filter_type" onchange="filterOptionsDisplay();" >
             <?php foreach($filters as $filter): ?>
                 <option value="<?php echo $filter; ?>"><?php echo $filter; ?></option>
             <?php endforeach; ?>
         </select>
 
-        <label for="filter_frequency">Filter Frequency</label>
-        <input type="range" min="20" max="4000" value="40" step="5" name="filter_frequency" id="filter_frequency" />
+        <fieldset id="filter_options" style="display: none;">
 
-        <label for="gain">Filter Gain</label>
-        <input type="range" min="0" max="20" value="12" step="1" name="gain" id="gain" />
+            <label for="filter_frequency">Filter Frequency: <span id="filter_frequency_display">40</span> Hz</label>
+            <input type="range" min="20" max="4000" value="40" step="5" name="filter_frequency" id="filter_frequency" onchange="updateDisplayValue('filter_frequency_display',this.value);" />
+
+            <label for="gain">Filter Gain: <span id="gain_display">12</span> dB</label>
+            <input type="range" min="0" max="20" value="12" step="1" name="gain" id="gain" onchange="updateDisplayValue('gain_display',this.value);" />
+
+        </fieldset>
 
         <button type="submit">Get Audio</button>
 

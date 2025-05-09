@@ -29,3 +29,12 @@ label, select, input{
 label+input[type="radio"], input[type="radio"]{
     display: inline;
 }
+
+fieldset{
+    border-width: 1px;
+    border-style: solid;
+    border-color: #666666;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 24px;
+}
